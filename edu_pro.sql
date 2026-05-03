@@ -121,3 +121,36 @@ FROM courses c
 JOIN enrollments e ON c.id = e.course_id
 GROUP BY c.id, c.course_name
 HAVING AVG(e.score) < 5.0;
+
+SELECT *
+FROM students
+WHERE date_of_birth > (
+    SELECT date_of_birth
+    FROM students
+    WHERE id = 1
+);
+
+SELECT s.full_name, s.id AS student_id, e.score
+FROM enrollments e
+JOIN students s ON e.student_id = s.id
+JOIN courses c ON e.course_id = c.id
+WHERE c.course_name = 'Tiếng Anh Giao Tiếp'
+AND e.score = (
+    SELECT MAX(e2.score)
+    FROM enrollments e2
+    JOIN courses c2 ON e2.course_id = c2.id
+    WHERE c2.course_name = 'Tiếng Anh Giao Tiếp'
+);
+
+SELECT s.*
+FROM students s
+LEFT JOIN enrollments e ON s.id = e.student_id
+WHERE e.student_id IS NULL;
+
+DELETE FROM enrollments
+WHERE course_id IN (
+    SELECT id FROM courses WHERE course_name = 'Triết học'
+);
+
+DELETE FROM courses
+WHERE course_name = 'Triết học';
